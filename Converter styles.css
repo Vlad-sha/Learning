@@ -1,0 +1,55 @@
+.title {
+    font-family:Arial,cursive;
+    font-weight:bold;
+    font-size:2rem;
+}
+#upper-case {
+    color: white;
+    height: 1.5cm;
+    width: 2cm;
+    margin:10px;
+    background-image: linear-gradient(blue,lightskyblue);
+    border-color: rgba(56, 86, 185, 0.726);
+    border-width:1px;
+    border-style:solid;
+}
+#lower-case {
+    color: white;
+    height: 1.5cm;
+    width: 2cm;
+    margin:10px;
+    background-image: linear-gradient(blue,lightskyblue);
+    border-color: rgba(56, 86, 185, 0.726);
+    border-width:1px;
+    border-style:solid;
+}
+#proper-case {
+    color: white;
+    height: 1.5cm;
+    width: 2cm;
+    margin:10px;
+    background-image: linear-gradient(blue,lightskyblue);
+    border-color: rgba(56, 86, 185, 0.726);
+    border-width:1px;
+    border-style:solid;
+}
+#sentence-case {
+    color: white;
+    height: 1.5cm;
+    width: 2cm;
+    margin:10px;
+    background-image: linear-gradient(blue,lightskyblue);
+    border-color: rgba(56, 86, 185, 0.726);
+    border-width:1px;
+    border-style:solid;
+}
+#save-text-file {
+    color: white;
+    height: 1.5cm;
+    width: 10cm;
+    margin:10px;
+    background-image: linear-gradient(blue,lightskyblue);
+    border-color: rgba(56, 86, 185, 0.726);
+    border-width:1px;
+    border-style:solid;
+}
