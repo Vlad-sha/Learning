@@ -124,7 +124,9 @@ It looks like we will soon have more rabbits!`;
 habitat = [camel, lion, deer, goose, bat, rabbit];
 
 propmt = input("Which habitat # do you need? Press 0-5 to proceed ");
-while (input !="exit")
+
 do {
 console.log(Number(prompt[habitat]));}
+while (input !="exit")
+
 console.log(`See you later!`);
