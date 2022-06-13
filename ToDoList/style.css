@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Koulen&display=swap');
+
+body {
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    padding-top: 150px;
+}
+
+.container, input, button, span {
+    font-family: 'Koulen', cursive;
+    font-size: 1.5rem;
+}
+
+h1 {
+    text-align: center;
+}
+
+#input-task {
+    border: none;
+    border-bottom: 2px solid blueviolet;
+    width: 25rem;
+}
+
+#add-task-button {
+    border: 2px solid blueviolet;
+    padding: 10px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+#add-task-button:hover{
+    border: 2px solid blueviolet;
+    padding: 10px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li, span, button {
+    margin-left: 15px;
+}
+
+li, input, span, button {
+    margin-top: 15px;
+}
+
+span + button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+img {
+    width: 15px;
+    height: 15px;
+}
+.delete-btn:hover{
+}
+input[type=checkbox]:checked + span {
+    text-decoration: line-through;
+}
