@@ -113,8 +113,14 @@ function remaining(){
 function exit(){
     function shortClean () {
     console.log("cleaning myself");
+    filler.water -= 50
     }
-    setTimeout(shortClean, 10000);
+    if (filler.water >= 50) {
+        setTimeout(shortClean, 10000);
+        }
+        else {
+            console.log("Can't perform cleaning, not enough water");
+        }
     process.exit(1);
 }
 
