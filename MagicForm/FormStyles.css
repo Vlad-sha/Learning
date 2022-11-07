@@ -1,0 +1,88 @@
+@import url(https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap);
+nav {
+    display: flex;
+    justify-content: flex-start;
+    height: 60px;
+    background-color: #016319;
+    left :0;
+    right :0;
+
+}
+a {
+    margin-top: 10px;
+    margin-left: 150px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    color :white;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: none;
+    color : yellow;
+}
+a:visited {
+    text-decoration: none;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: white;
+    margin: 0 30%;
+}
+label,input {
+    display: flow;
+    margin-top: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+button {
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    background-color: #016319;
+    color: white;
+    padding: 15px 100px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 24px;
+    cursor: pointer;
+    margin: auto;
+    border-radius: 4px;
+}
+button:hover {
+    color: yellow;
+    cursor: pointer;
+}
+.submit-history-card {
+    border-style: groove;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    margin: 10px 30%;
+    padding-left: 30px;
+}
+p {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+    padding: 15px 10px;
+
+    margin: auto;
+    font-size: 16px;
+}
+.delete-button {
+    font-family: 'Montserrat', sans-serif;
+    width: 200px;
+    padding: 10px;
+    margin-left: auto;
+    margin-bottom: 20px;
+    background: darkred;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.delete-button:hover {
+    color: yellow;
+    cursor: pointer;
+}
