@@ -15,7 +15,7 @@ function App() {
     setSchet(0)
   }
 
-  const buttonStyle = { backgroundColor: "lightred" }
+  const buttonStyle = { backgroundColor: "lightgreen" }
 
   return (
     <div className="App">
@@ -24,9 +24,14 @@ function App() {
       <Button onClick={incrementSchet} />
       <Button onClick={incrementSchet} />
       <Button onClick={incrementSchet} />
-      {schet > 0 && (
-        <ResetButton onClick={resetSchet} buttonStyle={buttonStyle} />
-      )}
+      <ResetButton onClick={resetSchet} style={buttonStyle} schet={schet} />
+      {/* {schet > 0 && (
+        <div>
+          <button style={buttonStyle} onClick={resetSchet}>
+            Reset
+          </button>
+        </div>
+      )} */}
     </div>
   )
 }

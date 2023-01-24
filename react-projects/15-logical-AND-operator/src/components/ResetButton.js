@@ -1,10 +1,12 @@
-function ResetButton({ onClick, buttonStyle }) {
+function ResetButton({ onClick, style, schet }) {
   return (
-    <div>
-      <button style={buttonStyle} onClick={onClick}>
-        Reset
-      </button>
-    </div>
+    schet > 0 && (
+      <div>
+        <button style={style} onClick={onClick}>
+          Reset
+        </button>
+      </div>
+    )
   )
 }
 export default ResetButton
