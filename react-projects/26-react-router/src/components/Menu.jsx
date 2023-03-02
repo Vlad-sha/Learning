@@ -24,6 +24,7 @@ const Menu = () => {
       >
         Contacts
       </NavLink>
+      <NavLink to="courses">Courses</NavLink>
     </nav>
   )
 }
