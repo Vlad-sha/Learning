@@ -1,18 +1,19 @@
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom"
 import { useEffect } from "react"
-import NotFound from "./NotFound"
 import courses from "../data/courses"
 
 const SingleCourse = () => {
   const params = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
+  console.log(location)
   const course = courses.find((course) => course.slug === params.courseSlug)
   useEffect(() => {
     if (!course) {
       navigate("..", { relative: "path" })
     }
-  }, [course])
-
+  }, [course, navigate])
+  // Showing "Not Found" component
   // if (!course) {
   //   return <NotFound />
   // }
