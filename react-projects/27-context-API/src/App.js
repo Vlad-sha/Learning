@@ -1,14 +1,17 @@
 import { useState } from "react"
+import UserContext from "./context/UserContext"
 import "./App.css"
 import User from "./components/User"
 
 function App() {
-  const [user, setUser] = useState("Vladislav")
+  const [user, setUser] = useState("Test")
 
   return (
-    <div className="App">
-      <User user={user} />
-    </div>
+    <UserContext.Provider value={user}>
+      <div className="App">
+        <User />
+      </div>
+    </UserContext.Provider>
   )
 }
 
