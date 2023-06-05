@@ -1,5 +1,5 @@
 import "./App.css"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import axios from "axios"
 
 function App() {
@@ -7,37 +7,44 @@ function App() {
   const [output, setOutput] = useState("")
 
   const onTextSubmit = async (text) => {
-    const response = await axios.post(
+    const { data } = await axios.post(
       "https://9yiq01h6ud.execute-api.eu-central-1.amazonaws.com/JsonValidationStage/ValidateJson/",
-      text,
-      { headers: { "Content-Type": "text/plain" } }
+      text
     )
-    if (response.data.isSucess) {
-      setOutput("Json valid")
-    } else setOutput(response.data.errorMessage)
-    console.log(response.data)
+    if (!data.isSucess) {
+      setOutput(data.errorMessage)
+    } else setOutput("JSON is valid")
+  }
+
+  const clear = () => {
+    setText("")
+    setOutput("")
   }
 
   return (
     <div className="App">
       <div>
-        <form onSubmit={() => onTextSubmit(text)}>
+        <form>
           <div className="field">
             <label>
-              <h1>Please type JSON to validate</h1>
+              <h1>JSON validator</h1>
             </label>
             <textarea
               onChange={(e) => {
                 setText(e.target.value)
               }}
               value={text}
-              rows={5}
-              cols={5}
+              rows={30}
+              placeholder="Write your JSON here"
             />
           </div>
         </form>
-        <button onClick={() => onTextSubmit(text)}>Send</button>
-        <button onClick={() => setText("")}>Clear</button>
+        <button className="send" onClick={() => onTextSubmit(text)}>
+          Send
+        </button>
+        <button className="clear" onClick={() => clear()}>
+          Clear
+        </button>
         <h3 className="ui header">Output:{output}</h3>
       </div>
     </div>
