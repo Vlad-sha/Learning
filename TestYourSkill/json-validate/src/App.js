@@ -11,9 +11,7 @@ function App() {
       "https://9yiq01h6ud.execute-api.eu-central-1.amazonaws.com/JsonValidationStage/ValidateJson/",
       text
     )
-    if (!data.isSucess) {
-      setOutput(data.errorMessage)
-    } else setOutput("JSON is valid")
+    !data.isSuccess ? setOutput(data.errorMessage) : setOutput("JSON is valid")
   }
 
   const clear = () => {
@@ -40,12 +38,12 @@ function App() {
           </div>
         </form>
         <button className="send" onClick={() => onTextSubmit(text)}>
-          Send
+          Validate
         </button>
         <button className="clear" onClick={() => clear()}>
           Clear
         </button>
-        <h3 className="ui header">Output:{output}</h3>
+        <h3 className="ui header">Results:{output}</h3>
       </div>
     </div>
   )
