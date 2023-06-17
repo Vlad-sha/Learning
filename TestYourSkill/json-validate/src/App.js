@@ -7,11 +7,14 @@ function App() {
   const [output, setOutput] = useState("")
 
   const onTextSubmit = async (text) => {
-    const { data } = await axios.post(
+    const response = await axios.post(
       "https://9yiq01h6ud.execute-api.eu-central-1.amazonaws.com/JsonValidationStage/ValidateJson/",
       text
     )
-    !data.isSuccess ? setOutput(data.errorMessage) : setOutput("JSON is valid")
+    console.log(response)
+    !response.data.isSuccess
+      ? setOutput(response.data.errorMessage)
+      : setOutput("JSON is valid")
   }
 
   const clear = () => {
