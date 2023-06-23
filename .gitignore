@@ -10,10 +10,8 @@ Intro to computational thinking - JetBrains Academy — Learn programming by bui
 /Components of computational thinking - JetBrains Academy — Learn programming by building your own apps_files
 /Flexbox
 script.js
-.gitignore
-.gitattributes
+node_modules/
 .pdf
-README.md
 .idea
 
 .git
