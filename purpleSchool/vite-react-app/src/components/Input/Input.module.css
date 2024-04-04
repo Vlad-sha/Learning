@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .input{
     border: none;
     background: none;
@@ -17,4 +18,25 @@
 .invalid {
     border: 1px solid red;
     background: rgb(68,6,6);
+=======
+.input{
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    font-family: "Source Sans 3", sans-serif;
+    border-bottom: 1px solid #323232;
+    width: 100%;
+}
+
+.input-title{
+    font-size: 32px;
+}
+
+.invalid {
+    border: 1px solid red;
+    background: rgb(68,6,6);
+>>>>>>> 74b09b3caf063b2ee6a3d512777f0af827501a7a
 }

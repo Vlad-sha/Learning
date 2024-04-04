@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .button {
     border-radius: 6px;
     padding: 8px 30px;
@@ -12,4 +13,20 @@
   }
 .accent {
     background: #312EB5;
+=======
+.button {
+    border-radius: 6px;
+    padding: 8px 30px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.25s;
+    font-size: 16px;
+    border: none;
+  }
+.accent:hover {
+    background: #b8b8b8;
+  }
+.accent {
+    background: #312EB5;
+>>>>>>> 74b09b3caf063b2ee6a3d512777f0af827501a7a
 }
