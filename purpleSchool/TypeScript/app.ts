@@ -72,3 +72,68 @@ function logObj (obj : {a : number} | {b : number}) {
         console.log (obj.b);
     }
 }
+
+
+function fetchWithAuth (url: string, method: 'get' | 'post') {
+    return 1;
+}
+
+let method = 'post';
+fetchWithAuth('sdfdsf', method as 'post')
+
+interface User {
+    name : string,
+    age : number,
+    skills: string[]
+}
+
+interface Id {
+    id : number
+}
+
+interface UserWithRole extends User, Id {
+    role?: string
+}
+
+let user : UserWithRole = {
+    name: 'Ffofas',
+    age: 53,
+    skills: ['1','2'],
+    id: 7,
+    role: 'Admin'
+}
+
+interface Dic {
+    [index : number] : User
+}
+
+type ud = Record<number, User>
+
+let user2 : UserWithRole = {
+    name : 'dfgdfg',
+    age : 34,
+    skills: ['think','sit'],
+    id: 3
+}
+
+function multiply ( first : number, second?: number) : number {
+    if (!second) {
+        return first * first
+    }
+    return first * second;
+}
+
+interface userPro {
+    user : string,
+    password? : {
+        type: 'primary' | 'secondary'
+    }
+}
+
+function testPass (user : userPro) {
+    const t = user.password?.type
+}
+
+function test (param?: string) {
+    return param ?? multiply(5);
+}
