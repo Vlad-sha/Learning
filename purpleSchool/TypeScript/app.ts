@@ -45,3 +45,30 @@ status : Status
 	const data = await res.json();
 	return data;
 }
+
+
+function logId (id: string | number | boolean) {
+        if (typeof id === 'string') {
+            console.log(id.toLowerCase())
+        } else if (typeof id === 'number') {
+            console.log(id.toExponential())
+        } else {
+            console.log(id)
+        }
+} 
+
+function logErr (err: string | string[]) {
+    if (Array.isArray(err)) {
+        console.log(err);
+    } else {
+        console.log(err);
+    }
+}
+
+function logObj (obj : {a : number} | {b : number}) {
+    if ('a' in obj) {
+        console.log (obj.a);
+    } else {
+        console.log (obj.b);
+    }
+}
