@@ -137,3 +137,48 @@ function testPass (user : userPro) {
 function test (param?: string) {
     return param ?? multiply(5);
 }
+
+function logIdV (id: string | number) : void {
+    console.log(id);
+}
+const a = logIdV(1);
+
+type voidFunc = () => void;
+const func1 : voidFunc = () => {
+
+}
+const func2 : voidFunc = () => {
+    return true;
+}
+const Pusto = func2();
+
+let Arr = [1,2,3,4,5,6,7];
+const math = {
+    rr : [0]
+}
+Arr.forEach((e) => {math.rr.push(e)});
+
+
+let input : unknown;
+input = ['dfgd']
+
+function run (i: unknown) {
+    if (typeof i == 'number') {
+        i++
+    } else {
+        i
+    }
+}
+
+run(input)
+
+async function getData () {
+    try {
+        await fetch('')
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            console.log(error.message);
+        }
+    }
+}
