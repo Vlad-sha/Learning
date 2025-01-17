@@ -182,3 +182,57 @@ async function getData () {
         }
     }
 }
+
+
+type paymentAction = 'refund' | 'checkout';
+
+function processAction (action : paymentAction) {
+    switch (action) {
+        case 'refund' :
+            ///
+            break;
+        case 'checkout' :
+            ////
+            break;
+        default :
+            const _: never =  action;
+            throw new Error(`нет такого ${action}`);      
+    }
+}
+
+
+const N: null = null;
+const n: any = null;
+
+
+let five = 5;
+let Five : string = five.toString();
+let e : string = new String(five).valueOf();
+let f: boolean = new Boolean(five).valueOf();
+
+let c = "string"
+let d: number = parseInt(c);
+
+interface User3 {
+    name : string,
+    email : string,
+    password : string
+}
+
+const user3 : User3 = {
+    name : 'Vlad',
+    email : 'Aboba@gmail.com',
+    password : 'asdfc'
+}
+
+interface Admin {
+    name : string
+    role : number
+}
+
+function roleToAdmin (user : User3) : Admin {
+    return {
+        name : user3.name,
+        role:1
+    }
+}
