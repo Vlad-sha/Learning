@@ -236,3 +236,23 @@ function roleToAdmin (user : User3) : Admin {
         role:1
     }
 }
+
+function isString (x : string | number) : x is string {
+    return typeof x === 'string';
+}
+
+function logId2 (id : string | number) {
+    if (isString(id)) {
+        console.log(id);
+    } else {
+        console.log(id);
+    }
+}
+
+function isAdmin (user : Admin | User) : user is Admin {
+    return 'role' in user;
+}
+
+function isAdminAlt (user : Admin | User) : user is Admin {
+    return (user as Admin).role !== undefined;
+}
