@@ -74,3 +74,41 @@ class Log implements ILogger {
     }
     
 }
+
+
+class User3 {
+    name : string;
+    constructor (name : string) {
+        this.name = name
+    }
+}
+
+class Users extends Array<User> {
+    searchByname (name: string) {
+        return this.filter(user => user.name === name)
+    }
+
+    override toString(): string {
+        return this.map(user => user.name).join(', ')
+    }
+}
+
+const users = new Users();
+users.push(new User('Артемий'));
+users.push(new User('Эременеджильдо'));
+console.log(users.toString());
+
+
+class Payment2 {
+    date: Date;
+}
+
+class userWithPayment {
+    user: User3
+    payment: Payment2
+
+    constructor(user : User, payment : Payment2) {
+        this.payment = payment;
+        this.user = user
+    }
+}
