@@ -1,58 +1,23 @@
-class Product {
-    constructor (
-       public name : string,
-       public id: number,
-       public price: number
-    ) {}
-}
+class Payment {
+    private date: Date = new Date();
 
-class Delivery {
-    constructor (
-        date: Date
-    ) {}
-}
+    getDate (this : Payment) {
+        return this.date;
+    }
 
-class HomeDelivery extends Delivery {
-    constructor (date : Date, homeAdress : string) {
-        super(date)
+    getDateArrow = () => {
+        return this.date
     }
 }
 
+const a = new Payment();
 
-class AdressDelivery extends Delivery {
-    constructor ( shopId : number) {
-        super(new Date())
-    }
+const user = {
+    id : 1,
+    paymentDate : a.getDate.bind(a),
+    paymentDateArrow : a.getDateArrow
 }
 
-type DeliveryOpt = HomeDelivery | AdressDelivery
-
-class Cart {
-    private products : Product[] = [];
-    private delivery : DeliveryOpt;
-    addProduct (product: Product) {
-        this.products.push(product);
-    }
-    deleteProduct (productId : number) {
-        this.products = this.products.filter((product : Product) => product.id !== productId);
-    }
-    getSum() : number {
-        return this.products
-        .map((p : Product) => p.price)
-        .reduce((price1 : number, price2 : number) => price1 + price2);
-    }
-
-    setDelivery (delivery : DeliveryOpt ) : void {
-        this.delivery = delivery;
-    }
-
-    CheckOut () {
-        if (this.products.length == 0) {
-            throw new Error ("Нет товаров в корзине");
-        }
-        if (!this.delivery) {
-            throw new Error ('Не указан способ доставки')
-        }
-        return {success : true};
-    }
-}
+console.log(a.getDate())
+console.log(user.paymentDate())
+console.log(user.paymentDateArrow())
