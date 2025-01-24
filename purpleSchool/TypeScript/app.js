@@ -1,10 +1,17 @@
 "use strict";
-class User {
-    constructor(name) {
-        this.name = name;
+class Logger {
+    printDate(date) {
+        this.log(date.toString());
     }
 }
-const Y = new User("Василий");
-console.log(Y);
-Y.name = 'Акакий';
-console.log(Y);
+class RealLogger extends Logger {
+    log(message) {
+        console.log(message);
+    }
+    logWithDate(message) {
+        this.printDate(new Date());
+        this.log(message);
+    }
+}
+const Test = new RealLogger();
+Test.logWithDate('Залупа');

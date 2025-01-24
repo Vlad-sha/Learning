@@ -1,23 +1,19 @@
-class Payment {
-    private date: Date = new Date();
-
-    getDate (this : Payment) {
-        return this.date;
-    }
-
-    getDateArrow = () => {
-        return this.date
+abstract class Logger {
+    abstract log (message : string) : void
+    printDate (date : Date) {
+        this.log(date.toString());
     }
 }
 
-const a = new Payment();
-
-const user = {
-    id : 1,
-    paymentDate : a.getDate.bind(a),
-    paymentDateArrow : a.getDateArrow
+class RealLogger extends Logger {
+    log (message : string) {
+            console.log (message)
+        }
+    logWithDate (message : string) {
+        this.printDate(new Date());
+        this.log(message);
+    }
 }
 
-console.log(a.getDate())
-console.log(user.paymentDate())
-console.log(user.paymentDateArrow())
+const Test = new RealLogger();
+Test.logWithDate('СМС')
