@@ -14,4 +14,4 @@ class RealLogger extends Logger {
     }
 }
 const Test = new RealLogger();
-Test.logWithDate('Залупа');
+Test.logWithDate('СМС');
