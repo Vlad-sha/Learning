@@ -87,3 +87,18 @@ const data = [
 ];
 console.log(Sort(data, 'asc'));
 console.log(Sort(data, 'desc'));
+class List {
+    constructor(items) {
+        this.items = items;
+    }
+}
+function ExtendedList(Base) {
+    return class ExtendedList extends Base {
+        first() {
+            return this.items[0];
+        }
+    };
+}
+const list = ExtendedList(List);
+const res2 = new list(['один', "dva", 'tri']);
+console.log(res2.first());

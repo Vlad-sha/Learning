@@ -131,3 +131,22 @@ function ExtendedList<TBase extends ListType>(Base : TBase) {
 const list = ExtendedList(List);
 const res2 = new list(['один',"dva",'tri']);
 console.log(res2.first());
+
+interface IUser {
+    user : string;
+    age : number;
+}
+
+type KeyOfType = keyof IUser;
+const key : KeyOfType = 'user';
+
+function GetValue<T, K extends keyof T> (obj : T , key : K) {
+    return obj[key]
+}
+
+const USer = {
+    user : "Вася",
+    age : 40
+}
+
+GetValue (USer, 'age');
