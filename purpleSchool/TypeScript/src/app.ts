@@ -1,152 +1,48 @@
-const num : Array<number> = [1,2,3];
+const a : number = Math.random() > 0.5 ? 1 : 0;
 
-async function test () {
-    const v = await new Promise <number> ((resolve, reject) => {
-        resolve(1);
-    });
+interface HTTPResponse <T extends "success" | "failed"> {
+    code : number;
+    data : T extends "success" ? string : Error;
 }
 
-function Middleware<T> (data: T) : T {
-    console.log(data);
-    return data;
+const suc : HTTPResponse <"success"> = {
+    code: 200,
+    data: 'done'
 }
 
-let res = Middleware(10);
-
-function splitHalf <T> (data: Array<T>) : Array<T> {
-    const l = data.length / 2;
-    return data.splice(0,l);
+const err : HTTPResponse <'failed'> = {
+    code : 200,
+    data : new Error()
 }
 
-splitHalf<number>([1,2,3,4,5,6]);
-
-
-function Stringify <G> (data : G) : string | undefined {
-    if (typeof data === 'string') {
-        return data
-    } else if (Array.isArray(data)) {
-        return data.toString();
-    }
-    switch (typeof data) {
-        case "number":
-        case "symbol":
-        case "boolean":
-        case "bigint":
-        case "function":
-            return data.toString();
-        case 'object':
-            return JSON.stringify(data);
-        default :
-        return undefined;
-    }
-
+class User {
+    id : number;
+    name : string
 }
 
-
-const split : <T> (data : Array<T>) => Array<T> = splitHalf;
-
-
-interface IlogLine <T> {
-    stamp : Date;
-    data : T
+class UserPersistend extends User {
+    dbId : string
 }
 
-type LogLineType <T> = {
-    stamp : Date;
-    data : T
-}
-
-const logLine: IlogLine <{a:number}> = {
-    stamp : new Date(),
-    data : {
-        a : 1
+function getUser(id : number): User;
+function getUser(dbId : string): UserPersistend;
+function getUser(dbIdOrId : string | number) : User | UserPersistend {
+    if (typeof dbIdOrId === 'string') {
+        return new UserPersistend()
+    } else {
+        return new User()
     }
 }
 
+type UserOrUserPersistend <T extends string | number> = T extends number ? User : UserPersistend;
 
-class Vehicle  {
-    run : number
-}
-
-function kmToMiles <T extends Vehicle> (vehicle : T): T {
-    vehicle.run = vehicle.run * 0,62;
-    return vehicle
-}
-
-class LCV extends Vehicle {
-    capacity : number
-}
-
-
-const vehicle = kmToMiles(new Vehicle());
-const lcv = kmToMiles(new LCV());
-
-function logID <T extends string | number, Y> (id : T, additionalData : Y) : {id :T, data : Y} {
-    console.log(id);
-    console.log(additionalData);
-    return {id, data : additionalData}
-}
-
-class ObjectSort {
-    id : number
-}
-
-function Sort < T extends ObjectSort> (val : T[], type: 'asc' | 'desc' = 'asc') : T[] {
-    return val.sort((a,b) => {
-        switch (type) {
-            case 'asc':
-                return a.id - b.id;
-            case 'desc':
-                return b.id + a.id;
-        }
-     })
-}
-
-
-const data = [
-    { id : 1, name : " sfds"},
-    {id : 2, name : 'rfvtb'},
-    {id : 3, name : 'plgujhion'}
-]
-
-console.log(Sort(data, 'asc'));
-console.log(Sort(data, 'desc'));
-
-type GConstructor< T ={}> = new (...args: any[]) => T
-
-class List {
-    constructor(public items  : string[]) {}
-}
-
-type ListType = GConstructor<List>
-
-function ExtendedList<TBase extends ListType>(Base : TBase) {
-    return class ExtendedList extends Base {
-        first() {
-            return this.items[0]
-        }
+function getUser2 <T extends string | number> (id : T) : UserOrUserPersistend<T> {
+    if (typeof id === 'number') {
+        return  new User() as UserOrUserPersistend<T>
+    }  else {
+        return new UserPersistend() as UserOrUserPersistend<T>
     }
 }
 
-const list = ExtendedList(List);
-const res2 = new list(['один',"dva",'tri']);
-console.log(res2.first());
-
-interface IUser {
-    user : string;
-    age : number;
-}
-
-type KeyOfType = keyof IUser;
-const key : KeyOfType = 'user';
-
-function GetValue<T, K extends keyof T> (obj : T , key : K) {
-    return obj[key]
-}
-
-const USer = {
-    user : "Вася",
-    age : 40
-}
-
-GetValue (USer, 'age');
+let res = getUser2(1);
+let res2 = getUser2('sdfsd');
