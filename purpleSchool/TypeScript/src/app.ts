@@ -1,48 +1,57 @@
-const a : number = Math.random() > 0.5 ? 1 : 0;
+type Modifier = 'read' | 'update' | 'create';
 
-interface HTTPResponse <T extends "success" | "failed"> {
-    code : number;
-    data : T extends "success" ? string : Error;
+type UserRoles = {
+    customers?: Modifier,
+    projects?: Modifier,
+    adminPanel?: Modifier
 }
 
-const suc : HTTPResponse <"success"> = {
-    code: 200,
-    data: 'done'
+type ModifierToAccess <T> = {
+    [Property in keyof T ] : boolean;
 }
 
-const err : HTTPResponse <'failed'> = {
-    code : 200,
-    data : new Error()
+type ModifierToAccessAuto = ModifierToAccess<UserRoles>
+
+type UserAccess = {
+    customers?: boolean,
+    projects?: boolean,
+    adminPanel?: boolean
 }
 
-class User {
-    id : number;
-    name : string
+
+interface IForm {
+    name : string;
+    password : string;
+}
+const form : IForm = {
+    name : 'Вася',
+    password : '123'
+}
+const formValidation = {
+    name : {IsValid : true},
+    password : {IsValid : false, errorMessage : 'Пароль должен быть длиннее 5 символов'}
 }
 
-class UserPersistend extends User {
-    dbId : string
-}
-
-function getUser(id : number): User;
-function getUser(dbId : string): UserPersistend;
-function getUser(dbIdOrId : string | number) : User | UserPersistend {
-    if (typeof dbIdOrId === 'string') {
-        return new UserPersistend()
-    } else {
-        return new User()
+type Validation <T> {
+    [k in keyof T] : {
+        isValid : true
+    } | {
+        IsValid : false;
+        errorMessage : string;
     }
 }
 
-type UserOrUserPersistend <T extends string | number> = T extends number ? User : UserPersistend;
 
-function getUser2 <T extends string | number> (id : T) : UserOrUserPersistend<T> {
-    if (typeof id === 'number') {
-        return  new User() as UserOrUserPersistend<T>
-    }  else {
-        return new UserPersistend() as UserOrUserPersistend<T>
-    }
+type ReadOrWrite = 'read' | 'write';
+type Bulk = 'bulk' | '';
+type Access = `can${Capitalize<ReadOrWrite>}${Capitalize<Bulk>}`;
+
+
+type ErrorOrSuccess = 'error' | 'success';
+
+interface Response {
+    result : `http${ErrorOrSuccess}`;
 }
 
-let res = getUser2(1);
-let res2 = getUser2('sdfsd');
+type ReadOrWriteBulk<T> = T extends `can${infer R}` ? R : never;
+type T  = ReadOrWriteBulk<Access>;
