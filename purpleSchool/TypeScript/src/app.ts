@@ -1,114 +1,49 @@
-type Modifier = 'read' | 'update' | 'create';
-
-type UserRoles = {
-    customers?: Modifier,
-    projects?: Modifier,
-    adminPanel?: Modifier
-}
-
-type ModifierToAccess <T> = {
-    [Property in keyof T ] : boolean;
-}
-
-type ModifierToAccessAuto = ModifierToAccess<UserRoles>
-
-type UserAccess = {
-    customers?: boolean,
-    projects?: boolean,
-    adminPanel?: boolean
+interface IUserService {
+    users : number;
+    getUserDataBase() : number
 }
 
 
-interface IForm {
-    name : string;
-    password : string;
-}
-const form : IForm = {
-    name : 'Вася',
-    password : '123'
-}
-const formValidation = {
-    name : {IsValid : true},
-    password : {IsValid : false, errorMessage : 'Пароль должен быть длиннее 5 символов'}
-}
+// @nullUsers
+// @setUsers (5)
+// @threeUsersAdvanced
+@ setUsersAdvanced(4)
+class UserService implements IUserService {
+    users: number;
 
-type Validation <T> = {
-    [k in keyof T] : {
-        isValid : true
-    } | {
-        IsValid : false;
-        errorMessage : string;
+    getUserDataBase(): number {
+        return this.users
     }
 }
 
-
-type ReadOrWrite = 'read' | 'write';
-type Bulk = 'bulk' | '';
-type Access = `can${Capitalize<ReadOrWrite>}${Capitalize<Bulk>}`;
-
-
-type ErrorOrSuccess = 'error' | 'success';
-
-interface Response {
-    result : `http${ErrorOrSuccess}`;
+function nullUsers (target : Function) {
+    target.prototype.users = 0;
 }
 
-type ReadOrWriteBulk<T> = T extends `can${infer R}` ? R : never;
-type T  = ReadOrWriteBulk<Access>;
-
-
-interface User {
-    name : string
-    age? : number
-    email : string
+function logUsers (obj : UserService) {
+    console.log('Users:' + obj.users);
+    return obj
 }
 
-type partial = Partial<User>;
-const p : partial = {}
-
-type required = Required<User>;
-type requiredAndReadonly = Readonly<Required<User>>;
+console.log(new UserService().getUserDataBase());
 
 
-interface PaymentPersistent {
-    id : number;
-    sum : number;
-    from : string;
-    to : string;
+function threeUsersAdvanced<T extends {new (...args : any[]): {}}> (constructor : T) {
+    return class extends constructor {
+        users = 3;
+    }
+} 
+
+function setUsers (users : number) {
+    return (target : Function) => {
+        target.prototype.users = users;
+    }
 }
 
-type Payment = Omit<PaymentPersistent, 'id'>;
-type Requisites = Pick<PaymentPersistent,'from' | 'to' >;
-type ExtarctEx = Extract<'from' | 'to' | Payment, string>;
-type ExcludeEx = Exclude<'from' | 'to' | Payment, string>;
-
-class User {
-    constructor( public id : number, public name : string) {}
+function setUsersAdvanced (users : number) {
+    return <T extends {new (...args : any[]): {} }> (constructor : T) => {
+        return class extends constructor {
+            users = users;
+        }
+    }
 }
-
-function getData (id : number) : User {
-    return new User (id, 'Василевс');
-}
-
-type RT = ReturnType<typeof getData>;
-type RT2 = ReturnType<<T>() => T>
-
-type PT = Parameters<typeof getData>[0];
-
-type CP = ConstructorParameters<typeof User>;
-
-// --------------
-type A = Awaited<Promise<Promise<string>>>;
-
-interface IMenu {
-    name : string
-    url : string
-}
-
-async function getMenu() : Promise<IMenu[]> {
-    return [{name : 'Аналитика', url: 'analytics'}];
-}
-
-type R = Awaited<ReturnType<typeof getMenu>>;
-
-
