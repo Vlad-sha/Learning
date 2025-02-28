@@ -8,11 +8,57 @@ interface IUserService {
 // @setUsers (5)
 // @threeUsersAdvanced
 @ setUsersAdvanced(4)
+@setCreatedAt
 class UserService implements IUserService {
     users: number;
 
+    @Catch({rethrow : true})
+    @Log
     getUserDataBase(): number {
-        return this.users
+
+        throw new Error ('Ошибка')
+    }
+}
+
+function Log (
+    target : Object,
+    propertyKey : string | symbol,
+    descriptor : TypedPropertyDescriptor<(...args : any[]) => any>
+) : TypedPropertyDescriptor<(...args : any[]) => any> | void {
+    console.log(target);
+    console.log(propertyKey);
+    console.log(descriptor);
+    descriptor.value = () => {
+        console.log('no error');
+    }
+}
+
+function Catch ({rethrow} : {rethrow : boolean} = {rethrow: true}) {
+    return (
+    target : Object,
+    propertyKey : string | symbol,
+    descriptor : TypedPropertyDescriptor<(...args : any[]) => any>
+) : TypedPropertyDescriptor<(...args : any[]) => any> | void => {
+    const oldValue = descriptor.value;
+    descriptor.value = async(...args : any[]) => {
+        try {
+            return await oldValue?.apply(target, args);
+        }
+        catch (e) {
+            if (e instanceof Error) {
+                console.log(e.message);
+                if (rethrow)  {
+                    throw e;
+                }
+            }
+        }
+    }
+}
+}
+
+function setCreatedAt< T extends { new (...args : any[]): {}}> (constructor : T) {
+    return class extends constructor {
+        createdAt = new Date();
     }
 }
 
@@ -25,7 +71,7 @@ function logUsers (obj : UserService) {
     return obj
 }
 
-console.log(new UserService().getUserDataBase());
+console.log(new UserService());
 
 
 function threeUsersAdvanced<T extends {new (...args : any[]): {}}> (constructor : T) {
