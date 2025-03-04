@@ -10,7 +10,8 @@ interface IUserService {
 @ setUsersAdvanced(4)
 @setCreatedAt
 class UserService implements IUserService {
-    users: number;
+    @Max(100)
+    users: number = 1000;
 
     @Catch({rethrow : true})
     @Log
@@ -56,6 +57,30 @@ function Catch ({rethrow} : {rethrow : boolean} = {rethrow: true}) {
 }
 }
 
+function Max (max : number) {
+    return (
+        target : Object,
+        propertyKey: string | symbol
+    ) => {
+        let value : number;
+        const setter = function (newValue : number) {
+            if (newValue > max) {
+                console.log(`Нельзя установить значение больше ${max}`);
+            } else {
+                value = newValue;
+            }
+        }
+
+        const getter = function() {
+            return value;
+        }
+        Object.defineProperty(target, propertyKey, {
+            set : setter,
+            get : getter
+        });
+    }
+}
+
 function setCreatedAt< T extends { new (...args : any[]): {}}> (constructor : T) {
     return class extends constructor {
         createdAt = new Date();
@@ -92,4 +117,74 @@ function setUsersAdvanced (users : number) {
             users = users;
         }
     }
+}
+
+const userService = new UserService();
+userService.users = 1;
+console.log(userService.users);
+userService.users = 1000;
+console.log(userService.users);
+
+
+interface IUserService2 {
+    getUserDataBase() : number
+}
+
+class UserService2 implements IUserService2 {
+   private _users: number;
+
+   @Log2()
+   set users (num : number) {
+    this._users = num;
+   }
+
+   get users () {
+    return this._users;
+   }
+
+    getUserDataBase(): number {
+
+        throw new Error ('Ошибка')
+    }
+}
+
+function Log2 () {
+    return (
+        target : Object,
+        _ : string | symbol,
+        descriptor : PropertyDescriptor
+    ) => {
+    const set = descriptor.set
+    descriptor.set = (...args : any) => {
+        console.log(args);
+        set?.apply(target, args);
+    }
+    }
+}
+
+function Uni (name : string) : any {
+    console.log(`Инициализация ${name}`);
+    return function () {
+        console.log(`Вызов ${name}`);
+    }
+} 
+
+@Uni('Класс')
+class MyClass {
+    @Uni ("Свойство")
+    props?: any;
+
+    @Uni("Свойство static")
+    static prop2?: any;
+
+    @Uni("Метод static")
+    static method2 (@Uni("Параметр метода static") _: any) {}
+
+    @Uni('Метод')
+    method (@Uni('Параметр метода') _: any) {}
+
+    constructor (@Uni('Параметр конструктора') _: any) {
+        
+    }
+
 }
