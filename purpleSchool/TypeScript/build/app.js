@@ -1,31 +1,50 @@
 "use strict";
-class MyMap {
+var ImageFormat;
+(function (ImageFormat) {
+    ImageFormat["Jpeg"] = "jpeg";
+    ImageFormat["Img"] = "img";
+    ImageFormat["Png"] = "png";
+})(ImageFormat || (ImageFormat = {}));
+class ImageBuilder {
     constructor() {
-        this.map = new Map();
+        this.formats = [];
+        this.resolutions = [];
     }
-    clean() {
-        this.map = new Map();
-    }
-    static get() {
-        if (!MyMap.instance) {
-            MyMap.instance = new MyMap();
+    addPng() {
+        if (this.formats.includes(ImageFormat.Png)) {
+            return this;
         }
-        return MyMap.instance;
+        this.formats.push(ImageFormat.Png);
+        return this;
+    }
+    addJpeg() {
+        if (this.formats.includes(ImageFormat.Jpeg)) {
+            return this;
+        }
+        this.formats.push(ImageFormat.Jpeg);
+        return this;
+    }
+    addResolution(width, height) {
+        this.resolutions.push({ width, height });
+        return this;
+    }
+    build() {
+        const res = [];
+        for (const resolution of this.resolutions) {
+            for (const format of this.formats) {
+                res.push({
+                    format: format,
+                    width: resolution.width,
+                    height: resolution.height
+                });
+            }
+        }
+        return res;
     }
 }
-class Service1 {
-    addmap(key, value) {
-        const myMap = MyMap.get();
-        myMap.map.set(key, value);
-    }
-}
-class Service2 {
-    getKeys(key) {
-        const myMap = MyMap.get();
-        console.log(myMap.map.get(key));
-        myMap.clean();
-        console.log(myMap.map.get(key));
-    }
-}
-new Service1().addmap(1, 'работает?');
-new Service2().getKeys(1);
+console.log(new ImageBuilder()
+    .addJpeg()
+    .addPng()
+    .addResolution(100, 50)
+    .addResolution(200, 100)
+    .build());
