@@ -1,59 +1,48 @@
-enum ImageFormat {
-    Jpeg = 'jpeg',
-    Img = 'img',
-    Png = 'png'
+interface IProvider {
+    sendMessage (message : string) : void;
+    connect(config : unknown) : void;
+    disconnect() : void;
 }
-
-interface IResolution {
-    width : number,
-    height : number
-}
-
-interface IImageConversion extends IResolution {
-    format : ImageFormat
-}
-
-class ImageBuilder {
-    private formats : ImageFormat[] = [];
-    private resolutions : IResolution[] = [];
-
-    addPng () {
-        if (this.formats.includes(ImageFormat.Png)) {
-            return this;
-        }
-        this.formats.push(ImageFormat.Png);
-        return this;
+class TelegramProvider implements IProvider {
+    sendMessage (message : string) : void {
+        console.log(message);
     }
-    addJpeg () {
-        if (this.formats.includes(ImageFormat.Jpeg)) {
-            return this;
-        }
-        this.formats.push(ImageFormat.Jpeg);
-        return this;
+    connect(config : string) : void {
+        console.log(config);
     }
-
-    addResolution(width : number, height : number) {
-        this.resolutions.push({width, height});
-        return this;
-    }
-    build() : IImageConversion[] {
-        const res : IImageConversion[] = [];
-        for (const resolution of this.resolutions){
-            for (const format of this.formats) {
-                res.push({
-                    format : format,
-                    width : resolution.width,
-                    height : resolution.height
-                })
-            }
-        }
-        return res;
+    disconnect() : void {
+        console.log('Disconnected TG');
     }
 }
 
-console.log(new ImageBuilder()
-.addJpeg()
-.addPng()
-.addResolution(100, 50)
-.addResolution(200, 100)
-.build());
+class WhatsAppProvider implements IProvider {
+    sendMessage (message : string) : void {
+        console.log(message);
+    }
+    connect(config : string) : void {
+        console.log(config);
+    }
+    disconnect() : void {
+        console.log('Disconnected WA');
+    }
+}
+
+class NotificationSender {
+    constructor(private provider : IProvider) {}
+
+    send() {
+        this.provider.connect('connect');
+        this.provider.sendMessage('message');
+        this.provider.disconnect();
+    }
+}
+
+class DelayedNotificationSender extends NotificationSender {
+    constructor(provider : IProvider){
+        super(provider)
+    }
+    sendDelayed(){};
+}
+
+const sender = new NotificationSender(new TelegramProvider);
+const sender2 = new NotificationSender(new WhatsAppProvider);
