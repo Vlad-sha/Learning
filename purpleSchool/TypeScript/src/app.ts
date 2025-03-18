@@ -1,49 +1,28 @@
-class Notify {
-    send(template : string, to : string) {
-        console.log(`отправляю ${template} : ${to}`)
+class KVDatabase {
+    private db: Map<string, string> = new Map();
+    save(key : string, value : string) {
+        this.db.set(key,value);
     }
 }
 
-class Log {
-    log (message : string) {
-        console.log(message)
+class PersistendDB {
+    savePersistend (data : Object) {
+        console.log(data);
     }
 }
 
-class Template {
-    private template = [
-        {
-            name : 'other',
-            template : '<h1>Шаблон</h1>'
-        }
-    ];
+class PersistendDBAdapter extends KVDatabase {
+    constructor(public database : PersistendDB) {
+        super();
+    }
 
-    getByName (name : string) {
-        return this.template.find(n => n.name === name);
+    override save(key: string, value: string): void {
+        this.database.savePersistend({key,value});
     }
 }
 
-class NotificationFacade {
-    private notify : Notify;
-    private logger : Log;
-    private template : Template;
+function run(base : KVDatabase){
+    base.save('key','myValue');
+};
 
-    constructor() {
-        this.notify = new Notify();
-        this.template = new Template();
-        this.logger = new Log();
-    }
-
-    send(to : string, templateName : string) {
-        const data = this.template.getByName(templateName);
-        if (!data) {
-            this.logger.log('не найден шаблон');
-            return;
-        }
-        this.notify.send(data.template, to);
-        this.logger.log('шаблон отправлен');
-    }
-}
-
-const s = new NotificationFacade();
-s.send('dadas', 'other');
+run(new PersistendDBAdapter(new PersistendDB));
