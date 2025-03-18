@@ -1,28 +1,34 @@
-class KVDatabase {
-    private db: Map<string, string> = new Map();
-    save(key : string, value : string) {
-        this.db.set(key,value);
-    }
+interface IPaymentAPI {
+    getPaymentDetail(id : number): IPaymentDetail | undefined;
 }
 
-class PersistendDB {
-    savePersistend (data : Object) {
-        console.log(data);
-    }
+interface IPaymentDetail {
+    id : number;
+    sum : number;
 }
 
-class PersistendDBAdapter extends KVDatabase {
-    constructor(public database : PersistendDB) {
-        super();
+class PaymentAPI  implements IPaymentAPI{
+    private data = [{id : 1, sum : 10000}];
+    getPaymentDetail(id: number): IPaymentDetail | undefined {
+        return this.data.find(d => d.id === id);
     }
 
-    override save(key: string, value: string): void {
-        this.database.savePersistend({key,value});
-    }
 }
 
-function run(base : KVDatabase){
-    base.save('key','myValue');
-};
+class PaymentAccessProxy implements IPaymentAPI{
+    constructor(private api : PaymentAPI, private userID : number) {}
 
-run(new PersistendDBAdapter(new PersistendDB));
+    getPaymentDetail(id: number): IPaymentDetail | undefined {
+        if (this.userID === 1 ) {
+            return this.api.getPaymentDetail(id);
+        }
+        console.log('Попытка получить данные платежа');
+        return undefined;
+    }
+
+}
+
+const proxy = new PaymentAccessProxy(new PaymentAPI(),1);
+console.log(proxy.getPaymentDetail(1));
+const proxy2 = new PaymentAccessProxy(new PaymentAPI(),2);
+console.log(proxy2.getPaymentDetail(1));
