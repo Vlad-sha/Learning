@@ -1,42 +1,50 @@
 "use strict";
-class TelegramProvider {
-    sendMessage(message) {
-        console.log(message);
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Product = exports.Package = exports.DeliveryShop = void 0;
+class DeliveryItem {
+    constructor() {
+        this.items = [];
     }
-    connect(config) {
-        console.log(config);
+    addItem(item) {
+        this.items.push(item);
     }
-    disconnect() {
-        console.log('Disconnected TG');
-    }
-}
-class WhatsAppProvider {
-    sendMessage(message) {
-        console.log(message);
-    }
-    connect(config) {
-        console.log(config);
-    }
-    disconnect() {
-        console.log('Disconnected WA');
+    getItemPrices() {
+        return this.items.reduce((acc, item) => acc += item.getPrice(), 0);
     }
 }
-class NotificationSender {
-    constructor(provider) {
-        this.provider = provider;
+class DeliveryShop extends DeliveryItem {
+    constructor(DeliveryFee) {
+        super();
+        this.DeliveryFee = DeliveryFee;
     }
-    send() {
-        this.provider.connect('connect');
-        this.provider.sendMessage('message');
-        this.provider.disconnect();
+    getPrice() {
+        return this.getItemPrices() + this.DeliveryFee;
     }
 }
-class DelayedNotificationSender extends NotificationSender {
-    constructor(provider) {
-        super(provider);
+exports.DeliveryShop = DeliveryShop;
+class Package extends DeliveryItem {
+    getPrice() {
+        return this.getItemPrices();
     }
-    sendDelayed() { }
-    ;
 }
-const sender = new NotificationSender(new TelegramProvider);
-const sender2 = new NotificationSender(new WhatsAppProvider);
+exports.Package = Package;
+class Product extends DeliveryItem {
+    constructor(price) {
+        super();
+        this.price = price;
+    }
+    getPrice() {
+        return this.price;
+    }
+}
+exports.Product = Product;
+const shop = new DeliveryShop(100);
+shop.addItem(new Product(1000));
+const pack1 = new Package();
+pack1.addItem(new Product(200));
+pack1.addItem(new Product(300));
+shop.addItem(pack1);
+const pack2 = new Package();
+pack2.addItem(new Product(20));
+shop.addItem(pack2);
+console.log(shop.getPrice());

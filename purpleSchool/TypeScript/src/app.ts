@@ -1,34 +1,51 @@
-interface IPaymentAPI {
-    getPaymentDetail(id : number): IPaymentDetail | undefined;
+abstract class DeliveryItem {
+    items : DeliveryItem[] = [];
+
+    addItem(item : DeliveryItem) {
+        this.items.push(item);
+    }
+
+    getItemPrices() {
+        return this.items.reduce((acc : number, item : DeliveryItem) => acc += item.getPrice(), 0)
+    }
+
+    abstract getPrice() : number;
 }
 
-interface IPaymentDetail {
-    id : number;
-    sum : number;
+export class DeliveryShop extends DeliveryItem {
+    constructor(public DeliveryFee : number) {
+        super();
+    }
+
+    getPrice() : number {
+        return this.getItemPrices() + this.DeliveryFee;
+    }
 }
 
-class PaymentAPI  implements IPaymentAPI{
-    private data = [{id : 1, sum : 10000}];
-    getPaymentDetail(id: number): IPaymentDetail | undefined {
-        return this.data.find(d => d.id === id);
+export class Package extends DeliveryItem {
+    getPrice(): number {
+        return this.getItemPrices();
+    }
+}
+
+export class Product extends DeliveryItem {
+    constructor(public price : number) {
+        super();
+    }
+    getPrice(): number {
+        return this.price;
     }
 
 }
 
-class PaymentAccessProxy implements IPaymentAPI{
-    constructor(private api : PaymentAPI, private userID : number) {}
+const shop = new DeliveryShop(100);
+shop.addItem(new Product(1000));
+const pack1 = new Package();
+pack1.addItem(new Product(200));
+pack1.addItem(new Product(300));
+shop.addItem(pack1);
+const pack2 = new Package();
+pack2.addItem(new Product(20));
+shop.addItem(pack2);
 
-    getPaymentDetail(id: number): IPaymentDetail | undefined {
-        if (this.userID === 1 ) {
-            return this.api.getPaymentDetail(id);
-        }
-        console.log('Попытка получить данные платежа');
-        return undefined;
-    }
-
-}
-
-const proxy = new PaymentAccessProxy(new PaymentAPI(),1);
-console.log(proxy.getPaymentDetail(1));
-const proxy2 = new PaymentAccessProxy(new PaymentAPI(),2);
-console.log(proxy2.getPaymentDetail(1));
+console.log(shop.getPrice());
