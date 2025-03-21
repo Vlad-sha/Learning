@@ -1,51 +1,57 @@
-abstract class DeliveryItem {
-    items : DeliveryItem[] = [];
-
-    addItem(item : DeliveryItem) {
-        this.items.push(item);
-    }
-
-    getItemPrices() {
-        return this.items.reduce((acc : number, item : DeliveryItem) => acc += item.getPrice(), 0)
-    }
-
-    abstract getPrice() : number;
+interface IMiddleware {
+    next(mid : IMiddleware) : IMiddleware;
+    handle(request : any) : any;
 }
 
-export class DeliveryShop extends DeliveryItem {
-    constructor(public DeliveryFee : number) {
-        super();
-    }
+abstract class AbstractMiddleware implements IMiddleware {
+    private nextMiddleware : IMiddleware
 
-    getPrice() : number {
-        return this.getItemPrices() + this.DeliveryFee;
+    next(mid: IMiddleware): IMiddleware {
+        this.nextMiddleware = mid;
+        return mid;
+    }
+    handle(request: any) {
+        if(this.nextMiddleware) {
+            return this.nextMiddleware.handle(request);
+        }
+        return;
     }
 }
 
-export class Package extends DeliveryItem {
-    getPrice(): number {
-        return this.getItemPrices();
+class AuthMiddleware extends AbstractMiddleware {
+   override handle(request: any) {
+            console.log('AuthMiddleware');
+            if (request.userId === 1) {
+                return super.handle(request);
+            }
+            return {error: 'Вы не авторизованы'}
     }
 }
 
-export class Product extends DeliveryItem {
-    constructor(public price : number) {
-        super();
-    }
-    getPrice(): number {
-        return this.price;
-    }
+class ValidateMiddleware extends AbstractMiddleware {
+    override handle(request: any) {
+             console.log('ValidateMiddleware');
+             if (request.body) {
+                 return super.handle(request);
+             }
+             return {error: 'нет body'}
+     }
+ }
 
-}
+ class Controller extends AbstractMiddleware {
+    override handle(request: any) {
+             console.log('Controller');
+             return {success: request}
+     }
+ }
 
-const shop = new DeliveryShop(100);
-shop.addItem(new Product(1000));
-const pack1 = new Package();
-pack1.addItem(new Product(200));
-pack1.addItem(new Product(300));
-shop.addItem(pack1);
-const pack2 = new Package();
-pack2.addItem(new Product(20));
-shop.addItem(pack2);
+ const controller = new Controller();
+ const validate = new ValidateMiddleware();
+ const auth = new AuthMiddleware();
 
-console.log(shop.getPrice());
+ auth.next(validate).next(controller);
+
+ console.log(auth.handle({
+    userId : 1,
+    body : 'Finished'
+ }));
