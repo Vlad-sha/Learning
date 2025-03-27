@@ -1,58 +1,79 @@
-interface Mediator {
-    notify (sender : string, event : string) : void
+class User {
+    constructor(public userId : number) {}
 }
 
-abstract class Mediated {
-    mediator : Mediator;
-    setMediator(mediator : Mediator) {
-        this.mediator = mediator;
+class CommandHistory {
+    public commands : Command[] =[];
+
+    push(command : Command) {
+        this.commands.push(command);
+    }
+
+    remove(command : Command) {
+        this.commands = this.commands.filter(c => c.commandId !== command.commandId);
     }
 }
 
-class Notifications {
-    send() {
-        console.log( 'Отправляю уведомление');
+abstract class Command {
+    public commandId : number;
+
+    abstract execute() : void;
+
+    constructor (public history : CommandHistory) {
+        this.commandId = Math.random();
     }
 }
 
-class Log {
-    log(message : string) {
-        console.log(message);
+class AddUserCommand extends Command {
+    constructor(
+        private user : User,
+        private recipient : UserService,
+        history : CommandHistory
+    ) {
+        super(history);
+    }
+    execute(): void {
+       this.recipient.saveUser(this.user);
+       this.history.push(this);
+    }
+
+    undo () {
+        this.recipient.deleteUser(this.user.userId);
+        this.history.remove(this);
     }
 }
 
-class EventHandler extends Mediated {
-    myEvent() {
-        this.mediator.notify('EventHandler','MyEvent');
+class UserService {
+    saveUser (user :User) {
+        console.log(`Сохраняю пользователя с id ${user.userId}`);
+    }
+    deleteUser (userId : number) {
+        console.log(`Удаляю пользователя с id ${userId}`);
     }
 }
 
-class NotificationMediator implements Mediator {
-    constructor (
-        public notifications  : Notifications,
-        public logger : Log,
-        public handler : EventHandler
-    ) {}
+class Controller {
+    receiver : UserService;
+    history : CommandHistory = new CommandHistory();
 
-    notify(_: string, event: string): void {
-       switch (event) {
-        case 'myEvent' :
-            this.notifications.send();
-            this.logger.log('Отправлено');
-            break;
-       }
-
+    addReceiver (receiver : UserService) {
+        this.receiver = receiver;
     }
 
+    run() {
+        const addUserCommand = new AddUserCommand(
+            new User(1),
+            this.receiver,
+            this.history
+        );
+        addUserCommand.execute();
+        console.log(addUserCommand.history);
+        addUserCommand.undo();
+        console.log(addUserCommand.history);
+    }
 }
 
-const handler = new EventHandler();
-const logger = new Log();
-const notifications = new Notifications();
-const m = new NotificationMediator(
-    notifications,
-    logger,
-    handler
-);
-handler.setMediator(m);
-handler.myEvent();
+const controller = new Controller();
+controller.addReceiver(new UserService());
+controller.run();
+

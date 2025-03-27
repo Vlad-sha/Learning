@@ -1,45 +1,64 @@
 "use strict";
-class AbstractMiddleware {
-    next(mid) {
-        this.nextMiddleware = mid;
-        return mid;
-    }
-    handle(request) {
-        if (this.nextMiddleware) {
-            return this.nextMiddleware.handle(request);
-        }
-        return;
+class User {
+    constructor(userId) {
+        this.userId = userId;
     }
 }
-class AuthMiddleware extends AbstractMiddleware {
-    handle(request) {
-        console.log('AuthMiddleware');
-        if (request.userId === 1) {
-            return super.handle(request);
-        }
-        return { error: 'Вы не авторизованы' };
+class CommandHistory {
+    constructor() {
+        this.commands = [];
+    }
+    push(command) {
+        this.commands.push(command);
+    }
+    remove(command) {
+        this.commands = this.commands.filter(c => c.commandId !== command.commandId);
     }
 }
-class ValidateMiddleware extends AbstractMiddleware {
-    handle(request) {
-        console.log('ValidateMiddleware');
-        if (request.body) {
-            return super.handle(request);
-        }
-        return { error: 'нет body' };
+class Command {
+    constructor(history) {
+        this.history = history;
+        this.commandId = Math.random();
     }
 }
-class Controller extends AbstractMiddleware {
-    handle(request) {
-        console.log('Controller');
-        return { success: request };
+class AddUserCommand extends Command {
+    constructor(user, recipient, history) {
+        super(history);
+        this.user = user;
+        this.recipient = recipient;
+    }
+    execute() {
+        this.recipient.saveUser(this.user);
+        this.history.push(this);
+    }
+    undo() {
+        this.recipient.deleteUser(this.user.userId);
+        this.history.remove(this);
+    }
+}
+class UserService {
+    saveUser(user) {
+        console.log(`Сохраняю пользователя с id ${user.userId}`);
+    }
+    deleteUser(userId) {
+        console.log(`Удаляю пользователя с id ${userId}`);
+    }
+}
+class Controller {
+    constructor() {
+        this.history = new CommandHistory();
+    }
+    addReceiver(receiver) {
+        this.receiver = receiver;
+    }
+    run() {
+        const addUserCommand = new AddUserCommand(new User(1), this.receiver, this.history);
+        addUserCommand.execute();
+        console.log(addUserCommand.history);
+        addUserCommand.undo();
+        console.log(addUserCommand.history);
     }
 }
 const controller = new Controller();
-const validate = new ValidateMiddleware();
-const auth = new AuthMiddleware();
-auth.next(validate).next(controller);
-console.log(auth.handle({
-    userId: 1,
-    body: 'Finished'
-}));
+controller.addReceiver(new UserService());
+controller.run();
