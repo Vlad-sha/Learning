@@ -1,57 +1,37 @@
 "use strict";
-class DocumentItem {
-    constructor() {
-        this.setState(new DraftDocumentItemState());
+class User {
+}
+class Auth {
+    constructor(strategy) {
+        this.strategy = strategy;
     }
-    getState() {
-        return this.state;
+    setStrategy(strategy) {
+        this.strategy = strategy;
     }
-    setState(state) {
-        this.state = state;
-    }
-    publishDoc() {
-        this.state.publish();
-    }
-    deleteDoc() {
-        this.state.delete();
+    authUser(user) {
+        return this.strategy.auth(user);
     }
 }
-class DocumentItemState {
-    setContext(item) {
-        this.item = item;
+class JWTStrategy {
+    auth(user) {
+        if (user.jwtToken) {
+            return true;
+        }
+        return false;
     }
 }
-class DraftDocumentItemState extends DocumentItemState {
-    constructor() {
-        super();
-        this.name = 'DraftDocument';
-    }
-    publish() {
-        console.log(`На сайт отправлен текст ${this.item.text}`);
-        this.item.setState(new PublishDocumentItemState());
-    }
-    delete() {
-        console.log("Документ удален");
+class GitHubStrategy {
+    auth(user) {
+        if (user.githubToken) {
+            //идем в API
+            return true;
+        }
+        return false;
     }
 }
-class PublishDocumentItemState extends DocumentItemState {
-    constructor() {
-        super();
-        this.name = 'PublishDocument';
-    }
-    publish() {
-        console.log('Нельзя публиковать уже опубликованный документ');
-    }
-    delete() {
-        console.log('Снято с публикации');
-        this.item.setState(new DraftDocumentItemState());
-    }
-}
-const item = new DocumentItem();
-item.text = 'Мой Пост!';
-console.log(item.getState());
-item.publishDoc();
-console.log(item.getState());
-item.publishDoc();
-item.deleteDoc();
-console.log(item.getState());
+const user = new User();
+user.jwtToken = 'token';
+const auth = new Auth(new JWTStrategy());
+console.log(auth.authUser(user));
+auth.setStrategy(new GitHubStrategy());
+console.log(auth.authUser(user));
