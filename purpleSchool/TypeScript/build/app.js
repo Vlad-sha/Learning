@@ -1,37 +1,55 @@
 "use strict";
-class Form {
-    constructor(name) {
+class Lead {
+    constructor(name, phone) {
         this.name = name;
-    }
-    ;
-}
-class SaveForm {
-    save(form) {
-        const res = this.fill(form);
-        this.log(res);
-        this.send(res);
-    }
-    log(data) {
-        console.log(data);
+        this.phone = phone;
     }
 }
-class FirstAPI extends SaveForm {
-    fill(form) {
-        return form.name;
+class NewLead {
+    constructor() {
+        this.observers = [];
     }
-    send(data) {
-        console.log(`Отправляю ${data}`);
+    attach(observer) {
+        if (this.observers.includes(observer)) {
+            return;
+        }
+        else {
+            this.observers.push(observer);
+        }
+    }
+    detach(observer) {
+        const observerIndex = this.observers.indexOf(observer);
+        if (observerIndex == -1) {
+            return;
+        }
+        else {
+            this.observers.splice(observerIndex, 1);
+        }
+    }
+    notify() {
+        for (const observer of this.observers) {
+            observer.update(this);
+        }
     }
 }
-class SecondAPI extends SaveForm {
-    fill(form) {
-        return { fio: form.name };
-    }
-    send(data) {
-        console.log(`Отправляю ${data}`);
+class NotificationService {
+    update(subject) {
+        console.log(`Notification Service получил уведомление`);
+        console.log(subject);
     }
 }
-const form1 = new FirstAPI();
-form1.save(new Form('Вася'));
-const form2 = new SecondAPI();
-form2.save(new Form('Вася'));
+class LeadService {
+    update(subject) {
+        console.log(`Leasd Service получил уведомление`);
+        console.log(subject);
+    }
+}
+const subject = new NewLead();
+subject.state = new Lead('Всеволод', 9953429564);
+const s1 = new NotificationService();
+const s2 = new LeadService();
+subject.attach(s1);
+subject.attach(s2);
+subject.notify();
+subject.detach(s1);
+subject.notify();

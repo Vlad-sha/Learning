@@ -1,44 +1,64 @@
-class Form {
-    constructor(public name: string){
-
-    };
+interface Observer {
+    update (subject :Subject) : void;
 }
 
-abstract class SaveForm<T> {
-     public save(form : Form) {
-        const res = this.fill(form);
-        this.log(res);
-        this.send(res);
-     }
-
-     protected abstract fill (form : Form) : T;
-     protected log (data : T): void {
-        console.log(data);
-     }
-     protected abstract send (data: T) : void;
+interface Subject {
+    attach(observer : Observer) : void;
+    detach(observer : Observer) : void;
+    notify() : void;
 }
 
-class FirstAPI extends SaveForm<string> {
-    protected fill(form: Form): string {
-        return form.name;
-    }
-    protected send(data: string): void {
-        console.log(`Отправляю ${data}`);
-    }
-
+class Lead {
+    constructor(public name : string, public phone : number ) {}
 }
 
-class SecondAPI extends SaveForm<{fio : string}> {
-    protected fill(form: Form): {fio : string} {
-        return {fio: form.name};
-    }
-    protected send(data: {fio : string}): void {
-        console.log(`Отправляю ${data}`);
-    }
+class NewLead implements Subject {
+    private observers : Observer[] =[];
+    public state : Lead;
 
+    attach(observer: Observer): void {
+        if (this.observers.includes(observer)) {
+            return
+        } else {
+            this.observers.push(observer);
+        }
+    }
+    detach(observer: Observer): void {
+        const observerIndex = this.observers.indexOf(observer);
+        if (observerIndex == -1) {
+            return;
+        } else {
+            this.observers.splice(observerIndex,1);
+        }
+    }
+    notify(): void {
+        for (const observer of this.observers) {
+            observer.update(this);
+        }
+    }
 }
 
-const form1 =  new FirstAPI();
-form1.save(new Form('Вася'));
-const form2 =  new SecondAPI();
-form2.save(new Form('Вася'));
+class NotificationService implements Observer {
+    update(subject: Subject): void {
+        console.log(`Notification Service получил уведомление`);
+        console.log(subject);
+    }
+}
+
+class LeadService implements Observer {
+    update(subject: Subject): void {
+        console.log(`Leasd Service получил уведомление`);
+        console.log(subject);
+    }
+}
+
+const subject = new NewLead();
+subject.state = new Lead('Всеволод', 9953429564);
+const s1 = new NotificationService();
+const s2 = new LeadService();
+
+subject.attach(s1);
+subject.attach(s2);
+subject.notify();
+subject.detach(s1);
+subject.notify();
